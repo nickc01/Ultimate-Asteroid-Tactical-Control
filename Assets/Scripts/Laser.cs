@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class Laser : MonoBehaviour
 {
+    //Static Fields
+    private static List<GameObject> SpawnedLasers = new List<GameObject>(); //A list of all the lasers currently in the scene
+
+    //Non-Static Fields
     public float Speed { get; set; } = 1f; //How fast the laser is traveling. This value is changed in the Spaceship Script
     public float Lifetime { get; set; } = 1f; //Determines how long the laser lives. This value is changed in the Spaceship Script
     private Vector3 Direction; //The Direction the Laser is traveling in
@@ -15,6 +19,8 @@ public class Laser : MonoBehaviour
         Destroy(gameObject, Lifetime);
         //Calculate the laser's direction based on its current rotation
         Direction = new Vector3(Mathf.Cos(transform.eulerAngles.z * Mathf.Deg2Rad),Mathf.Sin(transform.eulerAngles.z * Mathf.Deg2Rad));
+        //Add this laser to the list of spawned lasers
+        SpawnedLasers.Add(gameObject);
     }
 
     private void Update()
@@ -23,9 +29,29 @@ public class Laser : MonoBehaviour
         transform.position += Direction * Speed * Time.deltaTime;
     }
 
+    //Called when the laser is destroyed
+    private void OnDestroy()
+    {
+        //Remove this laser from the list of spawned lasers
+        SpawnedLasers.Remove(gameObject);
+    }
+
     //Triggered when it comes in contact with an enemy
     private void OnTriggerEnter2D(Collider2D collision)
     {
         
+    }
+
+    //Destroys all of the lasers in the scene
+    public static void DestroyAllLasers()
+    {
+        //Loop through each laser in the list
+        foreach (var laser in SpawnedLasers)
+        {
+            //Destroy the laser
+            Destroy(laser);
+        }
+        //Clear the spawned lasers list
+        SpawnedLasers.Clear();
     }
 }

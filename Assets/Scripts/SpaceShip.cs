@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class SpaceShip : MonoBehaviour
 {
+    //Static Fields
+    public static SpaceShip Singleton { get; private set; } //A singleton for accessing the player from static methods
+
+    //Non-Static Fields
     public float RotationSpeed = 90f; //How fast the ship rotates per second
     public float Acceleration = 1f; //How fast the ship accelerates
     [Space]
@@ -16,7 +20,18 @@ public class SpaceShip : MonoBehaviour
 
     void Start()
     {
-        
+        //If the singleton is not already set
+        if (Singleton == null)
+        {
+            //Set the singleton to this instance
+            Singleton = this;
+        }
+        //If it is already set
+        else
+        {
+            //Destroy this instance
+            Destroy(gameObject);
+        }
     }
 
     void Update()
@@ -73,6 +88,20 @@ public class SpaceShip : MonoBehaviour
     //Triggered when an enemy hits the player
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        
+        //The player has died and lost a life
+        GameManager.PlayerDeath();
+    }
+    //If the Space Ship leaves the screen
+    private void OnBecameInvisible()
+    {
+        //The player has died and lost a life
+        GameManager.PlayerDeath();
+    }
+    //Resets the space ship's position and velocity
+    public static void Reset()
+    {
+        //Reset the ship's position
+        Singleton.transform.position = Vector3.zero;
+        Singleton.velocityVector = Vector3.zero;
     }
 }

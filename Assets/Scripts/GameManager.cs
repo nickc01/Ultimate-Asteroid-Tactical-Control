@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -9,9 +10,15 @@ public class GameManager : MonoBehaviour
 
     //Non-Static Fields
     public GameObject LaserPrefab; //The Prefab for the Laser
+    public Text LivesText; //A Reference to the text controling the lives shown on screen
+    [Space]
+    [Space]
+    public int Lives = 3; //The Amount of lives the player has
 
     private void Start()
     {
+        //Reset the amount of lives based on the "Lives" variable
+        LivesText.text = "Lives:" + Lives;
         //If the singleton is not already set
         if (Singleton == null)
         {
@@ -25,6 +32,27 @@ public class GameManager : MonoBehaviour
         {
             //Destroy this instance
             Destroy(gameObject);
+        }
+    }
+
+    //Called whenever the player gets hit or leaves the screen
+    public static void PlayerDeath()
+    {
+        //Destroy all the enemies
+        Enemy.DestroyAllEnemies();
+        //Destroy all the lasers
+        Laser.DestroyAllLasers();
+        //Reset the space ship
+        SpaceShip.Reset();
+        //Subtract a life
+        Singleton.Lives--;
+        //Update the lives text
+        Singleton.LivesText.text = "Lives:" + Singleton.Lives;
+        //If there are no lives left
+        if (Singleton.Lives == 0)
+        {
+            //Disable the player, ending the game
+            SpaceShip.Singleton.gameObject.SetActive(false);
         }
     }
 }
