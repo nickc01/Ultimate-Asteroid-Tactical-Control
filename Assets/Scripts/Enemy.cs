@@ -20,10 +20,27 @@ public class Enemy : MonoBehaviour
         
     }
     //Called when the enemy is destroyed
-    private void OnDestroy()
+    public void OnDestroy()
     {
         //Remove this enemy to the list of spawned enemies
         SpawnedEnemies.Remove(this);
+    }
+
+    public void OnBecameInvisible()
+    {
+        //Destroy the object
+        DestroyEnemy();
+    }
+
+    //When the enemy comes in contact with something
+    public void OnTriggerEnter2D(Collider2D collision)
+    {
+        //If the enemy has come in contact with a laser
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Laser"))
+        {
+            //Destroy the enemy
+            DestroyEnemy();
+        }
     }
 
     //Destroys the Enemy
