@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,14 +20,29 @@ public class EnemyShip : Enemy
         Vector3 playerPosition = SpaceShip.Singleton.transform.position;
         //Calculate the direction towards the player's current position
         Direction = (playerPosition - transform.position).normalized;
+        //Set a random color at spawn
+        GetComponent<SpriteRenderer>().color = Color.HSVToRGB(Random.value, 1, 1);
     }
 
     protected override void Update()
     {
         //Call the base function
         base.Update();
-        Direction = Vector3.RotateTowards(Direction, SpaceShip.Singleton.transform.position, RotationSpeed * Mathf.Deg2Rad * Time.deltaTime, 0.0f);
+        //If Instant Rotation is set to true
+        if (InstantRotation)
+        {
+            //Rotate to face the player
+            Direction = (SpaceShip.Singleton.transform.position - transform.position).normalized;
+        }
+        else
+        //If Instant Rotation is set to false
+        {
+            //Rotate towards the player
+            Direction = Vector3.RotateTowards(Direction, SpaceShip.Singleton.transform.position - transform.position, RotationSpeed * Mathf.Deg2Rad * Time.deltaTime, 0.0f);
+        }
         //Move in the direction
         transform.position += Direction * Speed * Time.deltaTime;
+        //Set the rotation based on the Direction Vector
+        transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(Direction.y,Direction.x) * Mathf.Rad2Deg);
     }
 }

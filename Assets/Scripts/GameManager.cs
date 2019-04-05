@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour
 {
     //Static Fields
     public static GameManager Singleton { get; private set; } //The singleton used to access the Game Manager from static methods
-    public static List<Enemy> SpawnedEnemies = new List<Enemy>(); //A list of all the current enemies in the game
+    public static bool GameStarted { get; private set; } = true; //Determines whether the game is playing or not
 
     //Non-Static Fields
     public GameObject LaserPrefab; //The Prefab for the Laser
@@ -27,13 +27,13 @@ public class GameManager : MonoBehaviour
 
 
 
-    private float CurrentSpawnTime; //The current spawn time set before spawning in a new enemy
+    private float CurrentSpawnTime = 3f; //The current spawn time set before spawning in a new enemy
     private float spawnClock; //A clock to keep track of the current time
 
     private void Start()
     {
         //Reset the amount of lives based on the "Lives" variable
-        LivesText.text = "Lives:" + Lives;
+        LivesText.text = "Lives " + Lives;
         //If the singleton is not already set
         if (Singleton == null)
         {
@@ -61,8 +61,8 @@ public class GameManager : MonoBehaviour
             spawnClock = 0;
             //Generate a new spawn time
             CurrentSpawnTime = Random.Range(MinSpawnTime, MaxSpawnTime);
-            //If there are less enemies in the scene than the enemy cap limit
-            if (SpawnedEnemies.Count < EnemyCap)
+            //If the game is still running and if there are less enemies in the scene than the enemy cap limit
+            if (GameStarted && Enemy.SpawnedEnemies.Count < EnemyCap)
             {
                 //Spawn a new enemy
                 GameObject.Instantiate(Enemies[Random.Range(0, Enemies.Count)], SpawnPoints[Random.Range(0, SpawnPoints.Count)].transform.position, Quaternion.identity);
@@ -71,7 +71,7 @@ public class GameManager : MonoBehaviour
     }
 
     //Called whenever the player gets hit or leaves the screen
-    public static void PlayerDeath()
+    public static void LooseALife()
     {
         //Destroy all the enemies
         Enemy.DestroyAllEnemies();
@@ -86,13 +86,17 @@ public class GameManager : MonoBehaviour
         if (Singleton.LivesText != null)
         {
             //Update the lives text
-            Singleton.LivesText.text = "Lives:" + Singleton.Lives;
+            Singleton.LivesText.text = "Lives " + Singleton.Lives;
         }
         //If there are no lives left
         if (Singleton.Lives == 0)
         {
+            //Stop the game
+            GameStarted = false;
             //Disable the player, ending the game
             SpaceShip.Singleton.gameObject.SetActive(false);
+            //Quit the application
+            Application.Quit();
         }
     }
 }

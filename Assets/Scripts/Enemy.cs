@@ -5,7 +5,7 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     //Static Fields
-    private static List<Enemy> SpawnedEnemies = new List<Enemy>(); //A list of all the enemies in the scene
+    public static List<Enemy> SpawnedEnemies = new List<Enemy>(); //A list of all the enemies in the scene
 
     // Start is called before the first frame update
     protected virtual void Start()

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2362596289768012923}
   - component: {fileID: 2467767778293362840}
   - component: {fileID: 2174256531920391833}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Enemy Ship
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,6 +94,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5c95d47018b218438fdb388e68f7370, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  InstantRotation: 0
+  RotationSpeed: 45
+  Speed: 3
 --- !u!50 &2467767778293362840
 Rigidbody2D:
   serializedVersion: 4

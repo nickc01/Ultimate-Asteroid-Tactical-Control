@@ -8,11 +8,13 @@ public class SpaceShip : MonoBehaviour
     public static SpaceShip Singleton { get; private set; } //A singleton for accessing the player from static methods
 
     //Non-Static Fields
+    [Header("Ship")]
     public float RotationSpeed = 90f; //How fast the ship rotates per second
     public float Acceleration = 1f; //How fast the ship accelerates
     [Space]
+    [Header("Lasers")]
     public float LaserSpeed = 5f; //Determines how fast the lasers travel per second
-    public float Lifetime = 5; //Determines how long the laser lives in seconds
+    public float LaserLifetime = 5; //Determines how long the laser lives in seconds
     public float LaserFireRate = 5f; //Determines how many lasers will fire per second
 
     private Vector3 velocityVector; //Stores the current speed of the ship
@@ -78,24 +80,23 @@ public class SpaceShip : MonoBehaviour
             //Set the laser's speed
             laser.Speed = LaserSpeed;
             //Set the laser's lifetime
-            laser.Lifetime = Lifetime;
+            laser.Lifetime = LaserLifetime;
             //Reset the Fire Clock
             FireClock = 0f;
         }
-
+        //If the ship is outside of the camera view
+        if (!CameraHelper.Bounds.Contains(transform.position))
+        {
+            //The player has died and lost a life
+            GameManager.LooseALife();
+        }
     }
 
     //Triggered when an enemy hits the player
     private void OnTriggerEnter2D(Collider2D collision)
     {
         //The player has died and lost a life
-        GameManager.PlayerDeath();
-    }
-    //If the Space Ship leaves the screen
-    private void OnBecameInvisible()
-    {
-        //The player has died and lost a life
-        GameManager.PlayerDeath();
+        GameManager.LooseALife();
     }
     //Resets the space ship's position and velocity
     public static void Reset()
