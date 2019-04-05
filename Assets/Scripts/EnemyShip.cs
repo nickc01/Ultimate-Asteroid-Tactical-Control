@@ -12,6 +12,11 @@ public class EnemyShip : Enemy
 
     private Vector3 Direction; //The current direction the ship is facing in
 
+    public override int GetScore()
+    {
+        return 2;
+    }
+
     protected override void Start()
     {
         //Call the base function

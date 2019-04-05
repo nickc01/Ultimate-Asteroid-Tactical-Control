@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public abstract class Enemy : MonoBehaviour
 {
     //Static Fields
     public static List<Enemy> SpawnedEnemies = new List<Enemy>(); //A list of all the enemies in the scene
@@ -19,6 +19,10 @@ public class Enemy : MonoBehaviour
     {
         
     }
+
+    //Gets the score used when the enemy dies
+    public abstract int GetScore();
+
     //Called when the enemy is destroyed
     public void OnDestroy()
     {
@@ -29,7 +33,7 @@ public class Enemy : MonoBehaviour
     public void OnBecameInvisible()
     {
         //Destroy the object
-        DestroyEnemy();
+        DestroyEnemy(false);
     }
 
     //When the enemy comes in contact with something
@@ -39,13 +43,22 @@ public class Enemy : MonoBehaviour
         if (collision.gameObject.layer == LayerMask.NameToLayer("Laser"))
         {
             //Destroy the enemy
-            DestroyEnemy();
+            DestroyEnemy(true);
+            //Increase the Score by utilizing GetScore()
+            GameManager.IncreaseScore(GetScore());
         }
     }
 
     //Destroys the Enemy
-    public void DestroyEnemy()
+    public void DestroyEnemy(bool Explode)
     {
+        //If explode is set to true
+        if (Explode)
+        {
+            //Trigger an explosion
+            Explosion.PlayExplosion(transform.position);
+        }
+        //Destroy the gameobject
         Destroy(gameObject);
     }
     //Destroys all enemies in the scene

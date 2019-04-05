@@ -10,17 +10,30 @@ public class GameManager : MonoBehaviour
     public static bool GameStarted { get; private set; } = true; //Determines whether the game is playing or not
 
     //Non-Static Fields
+    [Header("Prefabs")]
     public GameObject LaserPrefab; //The Prefab for the Laser
-    public Text LivesText; //A Reference to the text controling the lives shown on screen
+    public GameObject ExplosionPrefab; //The Prefab for the Explosion
     [Space]
     [Space]
+    [Header("Text Fields")]
+    public Text LivesText; //A Reference to the text controlling the lives shown on screen
+    public Text ScoreText; //A reference to the text controlling the score shown on screen 
+    [Space]
+    [Space]
+    [Header("Lives")]
     public int Lives = 3; //The Amount of lives the player has
     [Space]
     [Space]
+    [Header("Score")]
+    public int Score = 0; //The current score of the game
+    [Space]
+    [Space]
+    [Header("Lists")]
     public List<GameObject> SpawnPoints; //A list of possible spawnpoints for the enemies to spawn at
     public List<GameObject> Enemies; //A list of possible enemies to spawn into the game
     [Space]
     [Space]
+    [Header("Spawning Paramters")]
     public float MinSpawnTime = 1f; //The minimum random spawn time
     public float MaxSpawnTime = 5f; //The maximum random spawn time
     public int EnemyCap = 3; //The maximum amount of enemies that can exist in the scene at once
@@ -34,6 +47,8 @@ public class GameManager : MonoBehaviour
     {
         //Reset the amount of lives based on the "Lives" variable
         LivesText.text = "Lives " + Lives;
+        //Reset the score the the base amount
+        ScoreText.text = "Score " + Score;
         //If the singleton is not already set
         if (Singleton == null)
         {
@@ -69,9 +84,17 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+    //Increases the score by a set amount
+    public static void IncreaseScore(int amount)
+    {
+        //Increase the score
+        Singleton.Score += amount;
+        //Update the score text
+        Singleton.ScoreText.text = "Score " + Singleton.Score;
+    }
 
-    //Called whenever the player gets hit or leaves the screen
-    public static void LooseALife()
+    //Called whenever the player gets hit or leaves the screen. Returns true if the game is over and false otherwise
+    public static bool LooseALife()
     {
         //Destroy all the enemies
         Enemy.DestroyAllEnemies();
@@ -97,6 +120,8 @@ public class GameManager : MonoBehaviour
             SpaceShip.Singleton.gameObject.SetActive(false);
             //Quit the application
             Application.Quit();
+            return true;
         }
+        return false;
     }
 }
