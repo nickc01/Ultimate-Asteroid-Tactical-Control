@@ -30,10 +30,14 @@ public abstract class Enemy : MonoBehaviour
         SpawnedEnemies.Remove(this);
     }
 
-    public void OnBecameInvisible()
+    public void OnTriggerExit2D(Collider2D collision)
     {
-        //Destroy the object
-        DestroyEnemy(false);
+        //If the collider is the bounds
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Bounds"))
+        {
+            //Destroy the object
+            DestroyEnemy(false);
+        }
     }
 
     //When the enemy comes in contact with something

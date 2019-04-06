@@ -26,7 +26,8 @@ public class EnemyShip : Enemy
         //Calculate the direction towards the player's current position
         Direction = (playerPosition - transform.position).normalized;
         //Set a random color at spawn
-        GetComponent<SpriteRenderer>().color = Color.HSVToRGB(Random.value, 1, 1);
+        var random = Random.insideUnitCircle;
+        GetComponent<SpriteRenderer>().color = Color.HSVToRGB((random.x + 1) / 2, 1 , (random.y + 1) / 2);
     }
 
     protected override void Update()

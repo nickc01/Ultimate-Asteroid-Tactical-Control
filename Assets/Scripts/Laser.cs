@@ -36,10 +36,14 @@ public class Laser : MonoBehaviour
         SpawnedLasers.Remove(gameObject);
     }
 
-    //Triggered when it comes in contact with an enemy
-    private void OnTriggerEnter2D(Collider2D collision)
+    public void OnTriggerExit2D(Collider2D collision)
     {
-        
+        //If the collider is the bounds
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Bounds"))
+        {
+            //Destroy the object
+            Destroy(gameObject);
+        }
     }
 
     //Destroys all of the lasers in the scene

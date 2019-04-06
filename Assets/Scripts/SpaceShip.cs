@@ -95,12 +95,6 @@ public class SpaceShip : MonoBehaviour
             //Reset the Fire Clock
             FireClock = 0f;
         }
-        //If the ship is outside of the camera view
-        if (!CameraHelper.Bounds.Contains(transform.position))
-        {
-            //The player has died
-            _ = Die();
-        }
 
         //If the ship is set to flash
         if (Flash)
@@ -122,6 +116,33 @@ public class SpaceShip : MonoBehaviour
         {
             //Set the renderer to be enabled
             renderer.enabled = true;
+        }
+    }
+
+    //Waits a set amount of milliseconds
+    private async Task Wait(int milliseconds)
+    {
+        await Task.Run(() => Thread.Sleep(milliseconds));
+    }
+
+    public void OnTriggerExit2D(Collider2D collision)
+    {
+        //If the collider is the bounds
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Bounds"))
+        {
+            //The player has died
+            _ = Die();
+        }
+    }
+
+    //Triggered when an enemy hits the player
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        //If the collider is an enemy
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+        {
+            //The player has died
+            _ = Die();
         }
     }
 
@@ -148,18 +169,6 @@ public class SpaceShip : MonoBehaviour
         }
     }
 
-    //Waits a set amount of milliseconds
-    private async Task Wait(int milliseconds)
-    {
-        await Task.Run(() => Thread.Sleep(milliseconds));
-    }
-
-    //Triggered when an enemy hits the player
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        //The player has died
-        _ = Die();
-    }
     //Resets the space ship's position and velocity
     public static void Reset()
     {
