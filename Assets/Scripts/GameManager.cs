@@ -38,6 +38,8 @@ public class GameManager : MonoBehaviour
     public float MaxSpawnTime = 5f; //The maximum random spawn time
     public int EnemyCap = 3; //The maximum amount of enemies that can exist in the scene at once
 
+    public float SpawnTimReductionRate = 0.01f; //How fast the spawn time gets reduced
+
 
 
     private float CurrentSpawnTime = 3f; //The current spawn time set before spawning in a new enemy
@@ -75,7 +77,7 @@ public class GameManager : MonoBehaviour
             //Reset the spawn clock
             spawnClock = 0;
             //Generate a new spawn time
-            CurrentSpawnTime = Random.Range(MinSpawnTime, MaxSpawnTime);
+            CurrentSpawnTime = Random.Range(MinSpawnTime, MaxSpawnTime) - (SpawnTimReductionRate * Time.time);
             //If the game is still running and if there are less enemies in the scene than the enemy cap limit
             if (GameStarted && Enemy.SpawnedEnemies.Count < EnemyCap)
             {

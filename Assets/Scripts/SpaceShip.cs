@@ -73,7 +73,7 @@ public class SpaceShip : MonoBehaviour
             velocityVector -= new Vector3(Mathf.Cos(transform.eulerAngles.z * Mathf.Deg2Rad) * Acceleration * Time.deltaTime, Mathf.Sin(transform.eulerAngles.z * Mathf.Deg2Rad) * Acceleration * Time.deltaTime);
         }
         //Move the ship
-        transform.position += velocityVector;
+        transform.position += velocityVector * Time.deltaTime;
 
 
 
@@ -119,12 +119,6 @@ public class SpaceShip : MonoBehaviour
         }
     }
 
-    //Waits a set amount of milliseconds
-    private async Task Wait(int milliseconds)
-    {
-        await Task.Run(() => Thread.Sleep(milliseconds));
-    }
-
     public void OnTriggerExit2D(Collider2D collision)
     {
         //If the collider is the bounds
@@ -142,19 +136,19 @@ public class SpaceShip : MonoBehaviour
         if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
             //The player has died
-            _ = Die();
+            StartCoroutine(Die());
         }
     }
 
     //Called when the player has lost a life
-    private async Task Die()
+    private IEnumerator Die()
     {
         //Trigger an explosion
         Explosion.PlayExplosion(transform.position);
         //Disable the gameobject
         gameObject.SetActive(false);
         //Wait a little bit
-        await Wait((int)(RespawnTime * 1000f));
+        yield return new WaitForSeconds(RespawnTime);
         //Reduce the lives counter and check if the game is not over yet
         if (!GameManager.LooseALife())
         {
@@ -163,7 +157,7 @@ public class SpaceShip : MonoBehaviour
             //Turn on flashing
             Flash = true;
             //Wait a little bit
-            await Wait((int)(FlashTime * 1000f));
+            yield return new WaitForSeconds(FlashTime);
             //Disable flashing
             Flash = false;
         }
